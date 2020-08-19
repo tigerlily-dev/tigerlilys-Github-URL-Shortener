@@ -150,7 +150,7 @@ UpdateShortUrlExample(*){  ; Updates short URL example with each keypress.
 }
 
 ShortenUrl(*){ ; Copies newly created short URL to clipboard on success. Displays target URL,
-               ; newly created short URL, and short URL character length.
+               ; newly created short URL, and short URL character length. Option to test short URL.
                ; If status code returned is not 201: fail. Displays status code for debugging.
     global
     GitHubUrlShortener.Hide()
@@ -183,6 +183,19 @@ ShortenUrl(*){ ; Copies newly created short URL to clipboard on success. Display
         OkButton := statusAlert.Add("Text", "w450 h20 Background0x4A4A47 center border", statusReturned = "Success" ? "SWEET" : "DARNIT")
         OkButton.SetFont("s12 bold")
         OkButton.OnEvent("Click", (*) => statusAlert.Destroy())
+        if (statusReturned = "Success")
+        {
+            OkButton.Opt("w225")
+            TestShortUrlButton := statusAlert.Add("Text", "w450 h20 Background0x4A4A47 center border", "TEST THE SHORT LINK!")
+            TestShortUrlButton.SetFont("s12 bold")
+            TestShortUrlButton.OnEvent("Click", (*) => testShortUrl())                                   
+        }
         statusAlert.Show()
+
+        testShortUrl(*){
+            
+            statusAlert.Destroy()
+            Run(shortUrl)
+        }    
     }
  }
