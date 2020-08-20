@@ -128,7 +128,7 @@ UpdateTargetUrl(ctrl, *){ ; Updates target URL edit control with each keypress.
     RemoveInvalidChars(needle){
 
         (pos := RegExMatch(value, needle)) ?  ((ctrl.Value := RegExReplace(value, needle, ""))   
-                                                ctrl.Focus(), Send("{Left}{Right " pos - 1 "}"))
+                                           ,    ctrl.Focus(), Send("{Left}{Right " pos - 1 "}"))
                                            :    ""  
     }
 }
