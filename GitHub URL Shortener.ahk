@@ -1,31 +1,32 @@
-;................................................................................
-;																				.
-; app ...........: tigerlily's GitHub URL Shortener								.
-; version .......: 0.2.0														.
-;																				.
-;................................................................................
-;																				.
-; author ........: tigerlily													.
-; language ......: AutoHotkey V2 (alpha 122-f595abc2)							.
-; github repo ...: https://git.io/tigerlilysGitHubURLShortener  				.
-; forum thread ..: https://bit.ly/tigerlilys-github-url-shortener-AHK-forum		.
-; license .......: MIT (https://git.io/tigerlilysGitHubURLShortenerLicense)		.
-;																				.
-;................................................................................
-; [CHANGE LOG], [PENDING] and [REMARKS] @ bottom of script						.
-;................................................................................
+;...............................................................................;
+;																				;
+; app ...........: tigerlily's GitHub URL Shortener								;
+; version .......: 0.3.0														;
+;																				;
+;...............................................................................;
+;																				;
+; author ........: tigerlily													;
+; language ......: AutoHotkey V2 (alpha 122-f595abc2)                           ;
+; github repo ...: https://git.io/tigerlilysGitHubURLShortener  				;
+; download EXE ..: https://bit.ly/download-exe-tigerlilys-github-url-shortener  ;
+; forum thread ..: https://bit.ly/tigerlilys-github-url-shortener-AHK-forum		;
+; license .......: MIT (https://git.io/tigerlilysGitHubURLShortenerLicense)		;
+;																				;
+;...............................................................................;
+; [CHANGE LOG], [PENDING] and [REMARKS] @ bottom of script						;
+;...............................................................................;
 
 
 ;................................................................................
-;		   ...........................................................			.
-;           A U T O - E X E C U T E   &   I N I T I A L I Z A T I O N			.
+;		   ...........................................................			;
+;           A U T O - E X E C U T E   &   I N I T I A L I Z A T I O N			;
 ;................................................................................
 
 #SingleInstance
 
 ;................................................................................
-;		                .................................		                .
-;                        D E F A U L T   S E T T I N G S		                .
+;		                .................................		                ;
+;                        D E F A U L T   S E T T I N G S		                ;
 ;................................................................................
 
 ; Change these assignments below to change default load settings 
@@ -36,8 +37,8 @@ code  := "yourShortcode"
 
 
 ;................................................................................
-;					  ..................................						.
-;                      T R A Y  M E N U   &   I C O N S		                 	.
+;					  ..................................						;
+;                      T R A Y  M E N U   &   I C O N S		                 	;
 ;................................................................................
 
 ; Set Icon ToolTip and App Name
@@ -64,8 +65,8 @@ try A_TrayMenu.SetIcon("Close"   , A_ScriptDir "\close-app.png")
 
 
 ;................................................................................
-;								     .......		        					.
-;                                     G U I       		                    	.
+;								     .......		        					;
+;                                     G U I       		                    	;
 ;................................................................................
 
 ; Create and display "GitHub URL Shortener" GUI and Controls
@@ -105,13 +106,16 @@ ShortenUrlButton := GitHubUrlShortener.Add("Text", "w450 h20 Background0x4A4A47 
 ShortenUrlButton.SetFont("s12 bold")
 ShortenUrlButton.OnEvent("Click", "ShortenUrl")
 
+EnterToSubmit := GitHubUrlShortener.Add("Button", "hidden default",)
+EnterToSubmit.OnEvent("Click", "ShortenUrl")
+
 GitHubUrlShortener.Show()
 
 
 
 ;................................................................................
-;								...................								.
-;                                F U N C T I O N S		                    	.
+;								...................								;
+;                                F U N C T I O N S		                    	;
 ;................................................................................
 
 
@@ -155,18 +159,18 @@ ShortenUrl(*){ ; Copies newly created short URL to clipboard on success. Display
     whr.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded")
     whr.Send(data), whr.WaitForResponse()
 
-    status := whr.Status A_Space whr.StatusText
-    status = "201 Created" ?    (shortUrl := (whr.GetResponseHeader("Location"))
-                           ,    (shortUrlLen := StrLen(shortUrl))
-                           ,    (targetUrl := whr.ResponseText)
-                           ,    ShowStatusAlert("Success", shortUrl, shortUrlLen, targetUrl)) 
-                           :    ShowStatusAlert("Fail")           
+    httpStatus := whr.Status A_Space whr.StatusText
+    httpStatus = "201 Created"  ?    (shortUrl := (whr.GetResponseHeader("Location"))
+                                ,    (shortUrlLen := StrLen(shortUrl))
+                                ,    (targetUrl := whr.ResponseText)
+                                ,    ShowStatusAlert("Success", shortUrl, shortUrlLen, targetUrl)) 
+                                :    ShowStatusAlert("Fail")           
                   
     ShowStatusAlert(status, shortUrl := "", shortUrlLen := "", targetUrl := ""){
         
         static Statuses := Map(
             "Success", "Success! Short URL created and copied to clipboard.`n`nShort URL (" shortUrlLen " chars):`n" (A_Clipboard := shortUrl) "`n`nTarget URL:`n" targetUrl,
-            "Fail",    "Failed for some reason.`n`nHTTP Status: " status)
+            "Fail",    "Failed for some reason.`n`nHTTP Status: " httpStatus)
 
         statusAlert := Gui.New( "-MaximizeBox", A_IconTip)
         statusAlert.OnEvent("Close", (statusAlert) => statusAlert.Destroy())
@@ -181,6 +185,9 @@ ShortenUrl(*){ ; Copies newly created short URL to clipboard on success. Display
                            ,    TestShortUrlButton.SetFont("s12 bold")
                            ,    TestShortUrlButton.OnEvent("Click", (*) => testShortUrl())) 
                            :    ""
+        
+        EnterToSubmit := statusAlert.Add("Button", "hidden default",)
+        EnterToSubmit.OnEvent("Click", (*) => statusAlert.Destroy())
         statusAlert.Show()
 
         testShortUrl(*){
@@ -199,7 +206,8 @@ ShortenUrl(*){ ; Copies newly created short URL to clipboard on success. Display
 ;................................................................................
  
 
-	
+	2020-08-20: Added feature to all GUIs: when user presses "Enter/Return", Submit/OK, etc
+	2020-08-20: Fixed bug causing renamed variables to conflict due to scope
 	2020-08-20: Renamed some variables
 	2020-08-20: Added Change Log, Pending, and Remarks sections
 	2020-08-20: Fixed some minor inconsistent formatting
@@ -233,8 +241,10 @@ ShortenUrl(*){ ; Copies newly created short URL to clipboard on success. Display
     - I tested this on regular GitHub pages (non-repository associated) and the 
                 shortcode would not return customized as I submitted it, 
                 however, to get around this, add an extra slash to the page
-                (https://github.com//about) like so and it will work.
+                (https://github.com//about) like so and it will work 
                 This was tested on Chrome, so may not work on other browsers.
+    - Doesn't appear to work for GitHub EXE direct downloads
+                (e.g. https://github/../.../.../app.exe)
 
 
 
