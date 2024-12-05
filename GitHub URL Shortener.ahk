@@ -1,16 +1,12 @@
 ;...............................................................................;
 ;                                                                               ;
-; app ...........: tigerlily's GitHub URL Shortener                             ;
+; app ...........: GitHub URL Shortener                             ;
 ; version .......: 0.3.0                                                        ;
 ;                                                                               ;
 ;...............................................................................;
 ;                                                                               ;
-; author ........: tigerlily                                                    ;
+; author ........: 348bestbox                                                    ;
 ; language ......: AutoHotkey V2 (alpha 122-f595abc2)                           ;
-; github repo ...: https://git.io/tigerlilysGitHubURLShortener                  ;
-; download EXE ..: https://bit.ly/tigerlilys-github-url-shortener-download-exe  ;
-; forum thread ..: https://bit.ly/tigerlilys-github-url-shortener-AHK-forum     ;
-; license .......: MIT (https://git.io/tigerlilysGitHubURLShortenerLicense)     ;
 ;                                                                               ;
 ;...............................................................................;
 ; [CHANGE LOG], [PENDING] and [REMARKS] @ bottom of script                      ;
@@ -42,7 +38,7 @@ code  := "yourShortcode"
 ;................................................................................
 
 ; Set Icon ToolTip and App Name
-A_IconTip := "tigerlily's GitHub URL Shortener"
+A_IconTip := "GitHub URL Shortener"
 
 ; Create tray menu with a "Close App" option
 A_TrayMenu.Delete()
